@@ -92,7 +92,7 @@ hooks-add-hook(){
 hooks-run-hook(){
   hooks="${1}_hooks"; shift
   for f in ${(P)hooks}; do
-    $f "${(P)@}"
+    $f "$@"
   done
 }
 
