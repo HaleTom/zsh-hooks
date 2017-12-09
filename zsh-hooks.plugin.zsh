@@ -10,7 +10,6 @@
 # autoload if that is given, as are -z and -k.  (This is harmless if the
 # function is actually defined inline.)
 
-
 hooks-add-hook(){
 
   emulate -L zsh
@@ -60,30 +59,30 @@ hooks-add-hook(){
     return $(( 1 - help ))
   fi
 
-  local hook="${1}"
+  local hooks="${1}_hooks"
   local fn="$2"
 
   if (( del )); then
     # delete, if hook is set
-    if (( ${(P)+hook} )); then
+    if (( ${(P)+hooks} )); then
       if (( del == 2 )); then
-        set -A $hook ${(P)hook:#${~fn}}
+        set -A $hooks ${(P)hooks:#${~fn}}
       else
-        set -A $hook ${(P)hook:#$fn}
+        set -A $hooks ${(P)hooks:#$fn}
       fi
       # unset if no remaining entries --- this can give better
       # performance in some cases
-      if (( ! ${(P)#hook} )); then
-        unset $hook
+      if (( ! ${(P)#hooks} )); then
+        unset $hooks
       fi
     fi
   else
-    if (( ${(P)+hook} )); then
-      if (( ${${(P)hook}[(I)$fn]} == 0 )); then
-        set -A $hook ${(P)hook} $fn
+    if (( ${(P)+hooks} )); then
+      if (( ${${(P)hooks}[(I)$fn]} == 0 )); then
+        set -A $hooks ${(P)hooks} $fn
       fi
     else
-      set -A $hook $fn
+      set -A $hooks $fn
     fi
     autoload $autoopts -- $fn
   fi
@@ -91,26 +90,34 @@ hooks-add-hook(){
 }
 
 hooks-run-hook(){
-  for f in ${(P)1}; do
-    $f
+  hooks="${1}_hooks"; shift
+  for f in ${(P)hooks}; do
+    $f "$@"
   done
 }
 
 hooks-define-hook(){
-  typeset -ag "$1"
+  typeset -ag "${1}_hooks"
 }
 
 -hooks-define-zle-hook(){
     local hname
     hname=$(echo $1 | tr '-' '_')
     eval "
-        hooks-define-hook ${hname}_hook
+        hooks-define-hook ${hname}
         ${1}(){
             ZSH_CUR_KEYMAP=\$KEYMAP
-            hooks-run-hook ${hname}_hook
+            hooks-run-hook ${hname}
         }
         zle -N ${1}
         "
+}
+
+# zle hook helper function
+add-zle-hook(){
+  local hname
+  hname=$(echo $1 | tr '-' '_')
+  hooks-add-hook ${hname} $2
 }
 
 -hooks-define-zle-hook zle-isearch-exit
@@ -126,4 +133,3 @@ hooks-define-hook(){
 
 # load the official hooks as well
 autoload -U add-zsh-hook
-
