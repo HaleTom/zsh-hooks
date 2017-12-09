@@ -90,10 +90,17 @@ hooks-add-hook(){
 }
 
 hooks-run-hook(){
+  local cancelled=0
   hooks="${1}_hooks"; shift
   for f in ${(P)hooks}; do
     $f "$@"
+
+    if [[ $? -ne 0 ]]; then
+      cancelled=1
+      break
+    fi
   done
+  return $cancelled
 }
 
 hooks-define-hook(){
