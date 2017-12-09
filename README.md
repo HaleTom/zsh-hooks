@@ -1,15 +1,6 @@
 ZSH Hooks
 =========
 
-Install
--------
-
-### zgen
-
-```
-zgen load willghatch/zsh-hooks
-```
-
 Usage
 -----
 
@@ -52,3 +43,30 @@ Why?
 ----
 
 Plugin authors might want to use this functionality, but if they do it will conflict with what end-users do. This can solve that problem. Basically this is made to be a dependency for other plugins.
+
+Install
+-------
+
+### [Zplugin](https://github.com/psprint/zplugin)
+
+```
+zplugin load RobertAudi/zsh-hooks
+```
+
+### [zplug](https://github.com/zplug/zplug)
+
+```
+zplug "RobertAudi/zsh-hooks"
+```
+
+### [zgen](https://github.com/tarjoilija/zgen)
+
+```
+zgen load RobertAudi/zsh-hooks
+```
+
+### [antigen](https://github.com/zsh-users/antigen)
+
+```
+antigen bundle RobertAudi/zsh-hooks
+```
