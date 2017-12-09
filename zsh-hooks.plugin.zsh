@@ -10,8 +10,7 @@
 # autoload if that is given, as are -z and -k.  (This is harmless if the
 # function is actually defined inline.)
 
-hooks-add-hook(){
-
+hooks-add-hook() {
   emulate -L zsh
 
   local opt
@@ -45,6 +44,7 @@ hooks-add-hook(){
       ;;
     esac
   done
+
   shift $(( OPTIND - 1 ))
 
   if (( list )); then
@@ -52,6 +52,7 @@ hooks-add-hook(){
       echo 'what hook do you want listed?' 2>&1
       return 1
     fi
+
     typeset -mp $@
     return $?
   elif (( help || $# != 2 )); then
@@ -70,6 +71,7 @@ hooks-add-hook(){
       else
         set -A $hooks ${(P)hooks:#$fn}
       fi
+
       # unset if no remaining entries --- this can give better
       # performance in some cases
       if (( ! ${(P)#hooks} )); then
@@ -84,14 +86,14 @@ hooks-add-hook(){
     else
       set -A $hooks $fn
     fi
+
     autoload $autoopts -- $fn
   fi
-
 }
 
-hooks-run-hook(){
+hooks-run-hook() {
   local cancelled=0
-  hooks="${1}_hooks"; shift
+  local hooks="${1}_hooks"; shift
   for f in ${(P)hooks}; do
     $f "$@"
 
@@ -103,16 +105,16 @@ hooks-run-hook(){
   return $cancelled
 }
 
-hooks-define-hook(){
+hooks-define-hook() {
   typeset -ag "${1}_hooks"
 }
 
--hooks-define-zle-hook(){
+-hooks-define-zle-hook() {
     local hname
     hname=$(echo $1 | tr '-' '_')
     eval "
         hooks-define-hook ${hname}
-        ${1}(){
+        ${1}() {
             ZSH_CUR_KEYMAP=\$KEYMAP
             hooks-run-hook ${hname}
         }
@@ -121,7 +123,7 @@ hooks-define-hook(){
 }
 
 # zle hook helper function
-add-zle-hook(){
+add-zle-hook() {
   local hname
   hname=$(echo $1 | tr '-' '_')
   hooks-add-hook ${hname} $2
@@ -131,6 +133,7 @@ add-zle-hook(){
 -hooks-define-zle-hook zle-isearch-update
 -hooks-define-zle-hook zle-line-init
 -hooks-define-zle-hook zle-line-finish
+
 # this one causes a double-free error for zaw using the ag source
 # because it does some funny stuff with the history.  Anyway,
 # since as far as I know nobody uses or wants to use this hook,
