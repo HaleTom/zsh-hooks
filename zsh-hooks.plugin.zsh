@@ -94,6 +94,7 @@ hooks-add-hook() {
 hooks-run-hook() {
   local cancelled=0
   local hooks="${1}_hooks"; shift
+  local f
   for f in ${(P)hooks}; do
     $f "$@"
 
