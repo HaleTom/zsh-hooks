@@ -36,8 +36,8 @@ hooks-add-hook() {
       return 1
     fi
 
-    typeset -mp $@
-    return $?
+    typeset -mp "$@"
+    return "$?"
   elif (( help || $# != 2 )); then
     print -u$(( 2 - help )) $usage
     return $(( 1 - help ))
@@ -109,8 +109,8 @@ hooks-define-hook() {
 # zle hook helper function
 add-zle-hook() {
   local hname
-  hname=$(echo $1 | tr '-' '_')
-  hooks-add-hook ${hname} $2
+  hname=$(echo "$1" | tr '-' '_')
+  hooks-add-hook "${hname}" "$2"
 }
 
 -hooks-define-zle-hook zle-isearch-exit
