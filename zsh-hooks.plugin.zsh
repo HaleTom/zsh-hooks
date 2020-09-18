@@ -1,3 +1,4 @@
+#!/bin/bash
 # Add to HOOK the given FUNCTION.
 #
 # With -d, remove the function from the hook instead; delete the hook
@@ -39,6 +40,7 @@ hooks-add-hook() {
     typeset -mp "$@"
     return "$?"
   elif (( help || $# != 2 )); then
+    local usage="I am usageless"  # XXXXXXXXX XXX
     print -u$(( 2 - help )) $usage
     return $(( 1 - help ))
   fi
